@@ -27,7 +27,7 @@ def home():
 @app.route('/remback',methods=['POST'])
 def remback():
     temp_dir = tempfile.mkdtemp()
-    output_file = os.path.join(temp_dir, 'output.png')
+    output_file = os.path.join(temp_dir, 'processed.png')
     file = request.files['file']
     if file and allowed_file(file.filename):
         file.save(os.path.join(temp_dir, file.filename))
