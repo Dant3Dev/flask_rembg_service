@@ -4,8 +4,10 @@ from rembg import remove
 from PIL import Image
 from flask import Flask,request,send_file
 from flask_cors import CORS
+from tempfile import TemporaryDirectory
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg','webp'])
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'JPEG','webp', 'heic'])
 
 app = Flask(__name__)
 CORS(app)
@@ -26,12 +28,12 @@ def home():
 
 @app.route('/remback',methods=['POST'])
 def remback():
-    temp_dir = tempfile.mkdtemp()
-    output_file = os.path.join(temp_dir, 'processed.png')
+    temp_dir = tempfile.TemporaryDirectory()
+    output_file = os.path.join(temp_dir.name, 'processed.png')
     file = request.files['file']
     if file and allowed_file(file.filename):
-        file.save(os.path.join(temp_dir, file.filename))
-        remove_background(os.path.join(temp_dir, file.filename), output_file)
+        file.save(os.path.join(temp_dir.name, file.filename))
+        remove_background(os.path.join(temp_dir.name, file.filename), output_file)
         return send_file(output_file, mimetype='image/jpeg')
 
 if __name__ == '__main__':
